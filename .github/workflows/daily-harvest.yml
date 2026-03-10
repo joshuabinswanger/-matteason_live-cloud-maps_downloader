@@ -23,10 +23,14 @@ jobs:
       - name: Run 8K Downloader
         run: python live-cloud-maps-downloader.py
 
+      - name: Get timestamp
+        id: timestamp
+        run: echo "value=$(date +'%Y%m%d_%H%M')" >> $GITHUB_OUTPUT
+
       - name: Upload Maps as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: earth-maps-${{ github.run_id }}
+          name: earth-maps-${{ steps.timestamp.outputs.value }}
           path: downloads/
           # Keep at 1 day to avoid hitting GitHub's 500MB private storage limit
           retention-days: 14
