@@ -8,6 +8,8 @@ on:
 jobs:
   harvest:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,11 +29,9 @@ jobs:
         id: timestamp
         run: echo "value=$(date +'%Y%m%d_%H%M')" >> $GITHUB_OUTPUT
 
-      - name: Upload Maps as Artifact
-        uses: actions/upload-artifact@v4
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: earth-maps-${{ steps.timestamp.outputs.value }}
-          path: downloads/
-          # Keep at 1 day to avoid hitting GitHub's 500MB private storage limit
-          retention-days: 14
-          compression-level: 0 # Disable compression to speed up the process (JPG/PNG are already compressed)
+          tag_name: maps-${{ steps.timestamp.outputs.value }}
+          name: Earth Maps ${{ steps.timestamp.outputs.value }}
+          files: downloads/**/*
